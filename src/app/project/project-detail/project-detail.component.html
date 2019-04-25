@@ -1,0 +1,559 @@
+<div *ngIf="project" class="subheader subheader-projectdetail">
+  <div class="subheader-x-leftcol">
+    <div class="gradebar gradebar-large" [ngClass]="'gradebar' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'overall'))">
+        <div class="grade grade-large" aria-label="grade">{{ getGradeByName(parseGuid(project.url), 'overall') }}</div>
+    </div>
+  </div>
+
+  <div class="subheader-x-rightcol">
+
+    <div class="subheader-x-title">
+      <div class="icontext icontext-trendingexlg" [ngClass]="'icontext-is-trend' + getTrendByName(parseGuid(project.url), 'overall')">
+          <span class="icontext-x-icontrending">
+            <svg alt="Icon">
+                <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'overall') }}"></use>
+            </svg>
+          </span>
+      </div>
+      <h2 id="page-heading">{{ project?.name }}</h2>
+    </div>
+
+    <div class="subheader-x-main">
+      <div class="subheader-x-section">
+        <h3>Topics:</h3>
+        <p *ngIf="project?.topics; else noTopics">{{ project?.topics }}</p>
+        <ng-template #noTopics><p>None</ng-template>
+      </div>
+      <div class="subheader-x-section">
+        <h3>Description:</h3>
+        <p>{{ project?.description }}</p>
+      </div>
+
+      <div class="subheader-x-table">
+        <div class="subheader-x-tableleft">
+          <div class="subheader-x-tableheader">Baseline</div>
+          <div class="subheader-x-tablerow">
+              <div class="subheader-x-tablecell1">Date:</div>
+              <div class="subheader-x-tablecell2">{{ baselineMeasurement?.date | date:'mediumDate' }} <span class="subheader-x-dateoffset">({{ daysAgo(baselineMeasurement?.date, latestMeasurement?.date) }} days ago)</span></div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">Revision Id:</div>
+            <div class="subheader-x-tablecell2">{{ baselineMeasurement?.revision_id.slice(0, 7) }}</div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">LOC:</div>
+            <div class="subheader-x-tablecell2"><strong>{{ baselineMeasurement?.useful_lines_of_code }}</strong></div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">Files:</div>
+            <div class="subheader-x-tablecell2"><strong>{{ baselineMeasurement?.num_files }}</strong></div>
+          </div>
+        </div>
+        <div class="subheader-x-tableright">
+          <div class="subheader-x-tableheader">Last Update</div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">Date:</div>
+            <div class="subheader-x-tablecell2">{{ latestMeasurement?.date | date:'mediumDate' }} at {{ latestMeasurement?.date | date:'shortTime' }}</div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">Revision Id:</div>
+            <div class="subheader-x-tablecell2">{{ latestMeasurement?.revision_id.slice(0, 7) }}</div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">LOC:</div>
+            <div class="subheader-x-tablecell2">
+                <strong>{{ latestMeasurement?.useful_lines_of_code }}</strong>
+                <ng-container *ngTemplateOutlet="locChange; context: { $implicit: latestMeasurement?.useful_lines_of_code - baselineMeasurement?.useful_lines_of_code }"></ng-container>
+                <ng-template #locChange let-locChange>
+                    <span>&nbsp;(<ng-container *ngIf="locChange > 0">+</ng-container>{{ locChange }})</span>
+                </ng-template>
+            </div>
+          </div>
+          <div class="subheader-x-tablerow">
+            <div class="subheader-x-tablecell1">Files:</div>
+            <div class="subheader-x-tablecell2">
+                <strong>{{ latestMeasurement.num_files }}</strong>
+                <ng-container *ngTemplateOutlet="filesChange; context: { $implicit: latestMeasurement?.num_files - baselineMeasurement?.num_files }"></ng-container>
+                <ng-template #filesChange let-filesChange>
+                    <span>&nbsp;(<ng-container *ngIf="filesChange > 0">+</ng-container>{{ filesChange }})</span>
+                </ng-template>
+           </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="subheader-x-footer">
+      <button (click)="createMeasurement()">Update<span> Project</span></button>
+      <span class="subheader-x-pipe"></span>
+      <button [routerLink]="['benchmark-description']" ><span>View </span>Benchmark</button>
+      <span class="subheader-x-pipe"></span>
+      <button [routerLink]="['measurements-table']" ><span>View </span>Measurements and Scores</button>
+    </div><!-- End footer -->
+  </div>
+</div>
+
+<app-message></app-message>
+
+<ng-template [ngIf]="measurements && latestMeasurement" [ngIfElse]="noData">
+    <!-- accordion section 1 -->
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-padtop">
+      <div class="subheader-x-leftcol">
+        <div class="icontext icontext-tabletlg" [ngClass]="'icontext' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'architecture'))">
+          <span class="icontext-x-icon">
+            <svg alt="Icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'architecture')) }}"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">Architecture ({{ latestMeasurement?.architecture_type }})</h3>
+        <div class="subheader-x-trendicon">
+          <div class="icontext icontext-trendingexlg icontext-is-trend{{ getTrendByName(parseGuid(project.url), 'architecture') }}">
+              <span class="icontext-x-icontrending">
+                <svg alt="Icon">
+                  <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'architecture') }}"></use>
+                </svg>
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail">
+      <div class="dropdown-x-readmore">
+        <div class="readmore readmore-lg">
+          <p class="readmore-x-teaser">
+                Systems with a better architecture score are those that make good use of modular and hierarchical structures within their code.
+          </p>
+          <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.architecture'>
+                Each software project is assigned one of four architecture types, based on the structure of ingoing and outgoing connections between files: Core-Periphery, Borderline Core-Periphery, Multi-Core, and Hierarchical. Most software will be classified as having a Core-Periphery or Borderline Core-Periphery architecture, which means that the software uses a standard architecture of a single core set of files. The two less common architecture types are Multi-Core and Hierarchical. These architecture types demonstrate a higher degree of modularity and hierarchy than the standard types.
+          </p>
+          <button class="readmore-x-toggle" (click)="toggleReadmore('architecture', $event)"></button>
+        </div>
+      </div>
+      <div class="dropdown-x-cols">
+
+        <div class="dropdown-x-leftcol">
+          <h4>Core Size</h4>
+          <div class="dropdown-x-stat">
+              <div class="statistic statistic-is-{{ getStatisticStatusByPercent(latestMeasurement, 'core_size') }}">
+              <div class="statistic-x-percent">{{ latestMeasurement?.core_size / 100 | percent }}</div>
+              <div class="statistic-x-amountoftotal">
+                <span>{{ latestMeasurement?.num_files_in_core }} of {{ latestMeasurement?.num_files }} files</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-x-readmore">
+            <div class="readmore readmore">
+              <p class="readmore-x-teaser">
+                    The percent of files that belong to the software’s core set. A smaller core size indicates better use of hierarchy and modularity.
+              </p>
+                  <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.coreSize'>
+                    This metric involves classifying every file into one of five sets based on the number of direct and indirect links to other files: core, shared, control, peripheral, and isolate. CBR Insight focuses on the core set, which represents the largest set of files that are interdependently linked to each other. Research in software engineering has found that files in the core set have more errors and are more difficult to maintain and extend, and that reducing core size results in lower maintenance costs.
+                  </p>
+                  <button class="readmore-x-toggle" (click)="toggleReadmore('coreSize', $event)"></button>
+            </div>
+          </div>
+          <div class="dropdown-x-chart">
+            <div class="chart">
+              <div class="chart-x-label">Trend Over Time</div>
+              <div class="chart-x-chart">
+                  <div class="chart-x-image">
+                      <nvd3 [data]="buildLineData('Core size', 'core_size', measurements)" [options]="setYAxisRange(lineOptions, 'core_size')"></nvd3>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dropdown-x-rightcol">
+          <h4>Propagation Cost</h4>
+          <div class="dropdown-x-stat">
+          <div class="statistic statistic-is-{{ getStatisticStatusByPercent(latestMeasurement, 'propagation_cost') }}">
+              <div class="statistic-x-percent">{{ latestMeasurement?.propagation_cost / 100 | percent }}</div>
+              <div class="statistic-x-amountoftotal">
+                <span>Links between files</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-x-readmore">
+            <div class="readmore readmore">
+              <p class="readmore-x-teaser">
+                    The proportion of software files that are linked to each other. A smaller value indicates a stable, less tightly connected, system.
+              </p>
+                  <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.propagationCost'>
+                    This metric counts direct links where one files calls another (e.g., A->B) as well as indirect links (e.g., A->B and B->C implies the indirect link of A->C). Propagation cost is the number of direct and indirect links that exist in the software divided by the number of possible links. A lower propagation cost indicates a system with fewer connections. As the number of connections increases, a change in one file is more likely to propagate changes to many other files. This increases the amount of work required to implement a change and makes it more difficult to avoid unintended consequences associated with the change.
+                  </p>
+                  <button class="readmore-x-toggle" (click)="toggleReadmore('propagationCost', $event)"></button>
+            </div>
+          </div>
+          <div class="dropdown-x-chart">
+            <div class="chart">
+              <div class="chart-x-label">Trend Over Time</div>
+              <div class="chart-x-chart">
+                  <div class="chart-x-image">
+                      <nvd3 [data]="buildLineData('Propagation cost', 'propagation_cost', measurements)" [options]="setYAxisRange(lineOptions, 'propagation_cost')"></nvd3>
+                  </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- accordion section 2 -->
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-padtop">
+      <div class="subheader-x-leftcol">
+          <div class="icontext icontext-tabletlg icontext{{ getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'complexity')) }}">
+          <span class="icontext-x-icon">
+            <svg alt="Icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'complexity')) }}"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">Complexity</h3>
+        <div class="subheader-x-trendicon">
+          <div class="icontext icontext-trendingexlg icontext-is-trend{{ getTrendByName(parseGuid(project.url), 'complexity') }}">
+              <span class="icontext-x-icontrending">
+                <svg alt="Icon">
+                  <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'complexity') }}"></use>
+                </svg>
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail">
+      <div class="dropdown-x-readmore">
+        <div class="readmore readmore-lg">
+          <p class="readmore-x-teaser">
+            Software developers work to manage the complexity within each individual file within the source code.
+          </p>
+          <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.complexity'>
+            Files that contain less logical complexity, less coupling to other files, fewer methods, and less code to deal with are more reliable and maintainable. Despite this general guidance, some complexity is always expected – there will necessarily be some number of overly complex, highly coupled, and lengthy files in all but the simplest of projects. Systems with a better complexity score are those that have fewer overly complex files and less duplicated code.
+          </p>
+          <button class="readmore-x-toggle" (click)="toggleReadmore('complexity', $event)"></button>
+        </div>
+      </div>
+      <div class="dropdown-x-cols">
+
+        <div class="dropdown-x-leftcol">
+          <h4>Overly Complex Files</h4>
+          <div class="dropdown-x-stat">
+              <div class="statistic statistic-is-{{ getStatisticStatusByPercent(latestMeasurement, 'percent_files_overly_complex') }}">
+              <div class="statistic-x-percent">{{ latestMeasurement?.percent_files_overly_complex / 100 | percent }}</div>
+              <div class="statistic-x-amountoftotal">
+                <span>{{ latestMeasurement?.num_files_overly_complex }} of {{ latestMeasurement?.num_files }} files</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-x-readmore">
+            <div class="readmore readmore">
+              <p class="readmore-x-teaser">
+                The percent of files that exceed accepted thresholds in 4 out of 5 categories. Fewer complex files improves the complexity score.
+              </p>
+                  <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.complexityOverall'>
+                The categories include lines of code, number of methods, complexity of methods, number of methods called in other files, and number of other files linked to. Respectively, these metrics are known in software engineering as LOC, WMC, WMC-McCabe, RFC, CBO and have found to be correlated with software reliability and maintainability across a wide variety of studies. While some complex files are always expected, the fewer overly complex files the better.
+                  </p>
+                  <button class="readmore-x-toggle" (click)="toggleReadmore('complexityOverall', $event)"></button>
+            </div>
+          </div>
+          <div class="dropdown-x-chart">
+            <div class="chart">
+              <div class="chart-x-label">Trend Over Time</div>
+                <div class="chart-x-chart">
+                    <div class="chart-x-image">
+                        <nvd3 [data]="buildLineData('Overly complex files', 'percent_files_overly_complex', measurements)" [options]="setYAxisRange(lineOptions, 'percent_files_overly_complex')"></nvd3>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dropdown-x-rightcol">
+          <h4>Duplicate Lines of Code</h4>
+          <div class="dropdown-x-stat">
+          <div class="statistic statistic-is-{{ getStatisticStatusByPercent(latestMeasurement, 'percent_duplicate_uloc') }}">
+              <div class="statistic-x-percent">{{ latestMeasurement?.percent_duplicate_uloc / 100 | percent }}</div>
+              <div class="statistic-x-amountoftotal">
+                  <span>{{ latestMeasurement?.duplicate_uloc }} : {{ latestMeasurement?.useful_lines_of_code }}</span><span>duplicates to lines of code</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-x-readmore">
+            <div class="readmore readmore">
+              <p class="readmore-x-teaser">
+                The percent of code that is duplicated within the project. Lower duplication improves the complexity score.
+              </p>
+              <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.duplicateLinesOfCode'>
+                The Don’t Repeat Yourself (DRY) principle of software engineering is aimed at minimizing the amount of redundant code. This metric directly affects the reliability and maintainability of the code. It is simpler and less error prone to make a change in one place rather than in five copies. It is also easier for the developer to understand the code with fewer copies of the same code around. Similar to complexity, some duplication of source code is always expected but the less duplication the better.
+              </p>
+              <button class="readmore-x-toggle" (click)="toggleReadmore('duplicateLinesOfCode', $event)"></button>
+            </div>
+          </div>
+          <div class="dropdown-x-chart">
+            <div class="chart">
+              <div class="chart-x-label">Trend Over Time</div>
+                <div class="chart-x-chart">
+                    <div class="chart-x-image">
+                        <nvd3 [data]="buildLineData('Duplicate Lines of Code', 'percent_duplicate_uloc', measurements)" [options]="setYAxisRange(lineOptions, 'percent_duplicate_uloc')"></nvd3>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- accordion section 3 -->
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-padtop">
+      <div class="subheader-x-leftcol">
+          <div class="icontext icontext-tabletlg icontext{{ getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'clarity')) }}">
+          <span class="icontext-x-icon">
+            <svg alt="Icon">
+              <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'clarity')) }}"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">Clarity</h3>
+        <div class="subheader-x-trendicon">
+          <div class="icontext icontext-trendingexlg icontext-is-trend{{ getTrendByName(parseGuid(project.url), 'clarity') }}">
+              <span class="icontext-x-icontrending">
+                <svg alt="Icon">
+                  <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'clarity') }}"></use>
+                </svg>
+              </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail">
+      <div class="dropdown-x-readmore">
+        <div class="readmore readmore-lg">
+          <p class="readmore-x-teaser">
+            Code that is easy to understand is more reliable and maintainable.
+          </p>
+          <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.clarity'>
+            While difficult to objectively measure, the clarity of source code has a big impact on reliability and maintainability. One example is the use of comments in source code to provide an overview or to describe the intent of the code. Another example includes using descriptive, meaningful names for classes, methods, and variables. Systems with a better clarity score are those that are found to be well commented and more readable.
+          </p>
+          <button class="readmore-x-toggle" (click)="toggleReadmore('clarity', $event)"></button>
+        </div>
+      </div>
+      <div class="dropdown-x-cols">
+
+        <div class="dropdown-x-leftcol">
+          <h4>Comment Density</h4>
+          <div class="dropdown-x-stat">
+              <div class="statistic statistic-is-{{ getStatisticStatusByPercent(latestMeasurement, 'useful_comment_density', true) }}">
+              <div class="statistic-x-percent">{{ latestMeasurement?.useful_comment_density / 100 | percent }}</div>
+              <div class="statistic-x-amountoftotal">
+                  <span>{{ latestMeasurement?.useful_lines_of_comments }} : {{ latestMeasurement?.useful_lines_of_code }}</span><span>comments to lines of code</span>
+              </div>
+            </div>
+          </div>
+          <div class="dropdown-x-readmore">
+            <div class="readmore readmore">
+              <p class="readmore-x-teaser">
+                The ratio of useful comments lines to useful lines of code. Clarity is improved with a higher comment density.
+              </p>
+              <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.commentDensity'>
+                The ‘useful’ measure of comments and lines of code identifies the actual number of lines of comments and code that a software developer would need to understand.
+
+                A Useful Comment Line is any comment, except: Comment blocks that include the words ‘copyright’, ‘license’, or ‘©’, empty comments (i.e. contain less than three non-whitespace characters), and comments that appear to be code. A Useful Line of Code is is any Software Line of Code, except: blank lines, comment lines, preprocessor lines, inactive lines, and lines of code used only to provide visual spacing (e.g. “;”, “}”, “{{'{'}}“, “(“, “)});”).
+              </p>
+              <button class="readmore-x-toggle" (click)="toggleReadmore('commentDensity', $event)"></button>
+            </div>
+          </div>
+          <div class="dropdown-x-chart">
+            <div class="chart">
+              <div class="chart-x-label">Trend Over Time</div>
+                <div class="chart-x-chart">
+                    <div class="chart-x-image reverse-chart-colors">
+                        <nvd3 [data]="buildLineData('Comment density', 'useful_comment_density', measurements, 'useful_comment_density', true)" [options]="setYAxisRange(lineOptions, 'useful_comment_density')"></nvd3>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dropdown-x-rightcol">
+              <h4>Readability</h4>
+              <div class="dropdown-x-readmore">
+                <div class="readmore readmore">
+                  <p class="readmore-x-teaser">
+                    The results from manually evaluating the readability of code samples.
+                  </p>
+                  <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.readability'>
+                    This metric is based on software engineers reviewing selected samples of code and answering questions derived from the COCOMO II Software Understanding factors. Average results are reported. Given that manual effort is required, this metric is optional but highly recommended.
+                  </p>
+                  <button class="readmore-x-toggle" (click)="toggleReadmore('readability', $event)"></button>
+                </div>
+              </div>
+              <div class="statistic statistic-multiple">
+                <div class="statistic-x-stat">
+                  <div class="statistic-x-amount">?</div>
+                  <div class="statistic-x-bar">
+                    <div class="statisticbar statisticbar-is-TBD"></div>
+                  </div>
+                  <div class="statistic-x-total">Stucture</div>
+                </div>
+                <div class="statistic-x-stat">
+                  <div class="statistic-x-amount">?</div>
+                  <div class="statistic-x-bar">
+                    <div class="statisticbar statisticbar-is-TBD"></div>
+                  </div>
+                  <div class="statistic-x-total">Application Clarity</div>
+                </div>
+                <div class="statistic-x-stat">
+                  <div class="statistic-x-amount">?</div>
+                  <div class="statistic-x-bar">
+                    <div class="statisticbar statisticbar-is-TBD"></div>
+                  </div>
+                  <div class="statistic-x-total">Self-Descriptiveness</div>
+                </div>
+              </div>
+            </div>
+      </div>
+    </div>
+
+    <!-- accordion section 4 -->
+    <!--
+        Subject: Re: [CBR Insight] REST API Data model changed
+        Date: April 02, 2018
+        Body: "Source Code Activity - we do not have this data.  Skip this section for now, i.e. we do not need a place holder like Readability."
+    -->
+    <!--
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-dark">
+        <div class="subheader-x-leftcol">
+            <div class="icontext icontext-dark icontext-tabletlg">
+                <span class="icontext-x-icon">
+                    <svg alt="Icon">
+                        <use xlink:href="#icon-code"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div class="subheader-x-middlecol">
+            <h3 class="subheader-x-title">Source Code Activity</h3>
+        </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail dropdown-dark dropdown-activity">
+        <div class="dropdown-x-description">
+            <div class="dropdown-x-descriptionheadersm">? Contributions in the last 6 mos. </div>
+        </div>
+        <div class="chart chart-large">
+            <div class="chart-x-image">
+                <svg width="100%" height="340">
+                    <rect width="100%" height="340" style="fill:#bbb" />
+                </svg>
+            </div>
+        </div>
+    </div>
+    -->
+
+    <!-- accordion section 5 -->
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-dark subheader-padtop">
+      <div class="subheader-x-leftcol">
+        <div class="icontext icontext-dark icontext-tabletlg">
+          <span class="icontext-x-icon">
+            <svg alt="Icon">
+              <use xlink:href="#icon-size"></use>
+            </svg>
+          </span>
+        </div>
+      </div>
+      <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">File Size and Complexity</h3>
+      </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail dropdown-dark">
+      <div class="dropdown-x-readmore">
+        <div class="readmore readmore-lg readmore-dark">
+          <p class="readmore-x-teaser">
+                Each box represents a file, where the size of the box indicates the useful lines of code and the color the number of complexity thresholds exceeded (darker red is worse).
+          </p>
+          <p class="readmore-x-paragraph" [@slidePanel]='readmoresAnimationState.treemap'>
+            In the architecture view, files are organized within their determined architecture set (core, shared, control, peripheral, and isolate). Click on architecture set to see the files with  the set; right click to navigate back to the architectures.
+          </p>
+          <button class="readmore-x-toggle" (click)="toggleReadmore('treemap', $event)"></button>
+        </div>
+      </div>
+      <div class="chart chart-large">
+        <div *ngIf="treeMapData" class="chart-x-image">
+            <google-chart [data]="treeMapData"></google-chart>
+        </div>
+      </div>
+      <div class="formradios l-formradios">
+          <input class="u-visuallyhidden" type="radio" name="formradio1" id="arch" value="foo" checked>
+          <label for="arch">Architecture view</label>
+          <!--
+          <input class="u-visuallyhidden" type="radio" name="formradio1" id="dir" value="bar">
+          <label for="dir">Directory view</label>
+          -->
+      </div>
+    </div>
+
+    <!-- accordion section 6 -->
+    <div class="subheader subheader-cols subheader-projectdetailsection subheader-dark">
+        <div class="subheader-x-leftcol">
+            <div class="icontext icontext-dark icontext-tabletlg">
+                <span class="icontext-x-icon">
+                    <svg alt="Icon">
+                        <use xlink:href="#icon-info"></use>
+                    </svg>
+                </span>
+            </div>
+        </div>
+        <div class="subheader-x-middlecol">
+            <h3 class="subheader-x-title">Project Info</h3>
+        </div>
+    </div>
+    <div class="dropdown dropdown-projectdetail dropdown-dark" [class.dropdown-is-deleterepoconfirm]="confirmDelete">
+        <div class="dropdown-x-actions">
+            <a [routerLink]="['update']">Edit</a>
+            <span class="dropdown-x-pipe"></span>
+            <a *ngIf="! confirmDelete; else confirmDeleteTmpl" (click)="confirmDelete = true; $event.preventDefault()" href>Delete Project</a>
+            <ng-template #confirmDeleteTmpl>
+                <span>Are you sure? &nbsp;&nbsp;</span>
+                <a href (click)="deleteProject(project.id)">Yes</a>
+                <span class="dropdown-x-pipe"></span>
+                <a href (click)="confirmDelete = false">Cancel</a>
+            </ng-template>
+        </div>
+        <div class="projectinfo l-projectinfo">
+            <label>Repo URL:</label>
+            <div><a href="{{ project?.address }}">{{ project?.address }}</a></div>
+        </div>
+        <div *ngIf="project.repositoryOwner" class="projectinfo l-projectinfo">
+            <label>Owner:</label>
+            <div><a href="#">{{ project.repositoryOwner }}</a></div>
+        </div>
+        <div *ngIf="project.createdAt" class="projectinfo l-projectinfo">
+            <label>Created:</label>
+            <div>{{ project.createdAt | date:'mediumDate' }}</div>
+        </div>
+        <div class="projectinfo l-projectinfo">
+            <label>Language:</label>
+            <div>{{ project?.language }}</div>
+        </div>
+        <div class="projectinfo l-projectinfo">
+            <label>Shared With:</label>
+            <div>
+                <ng-container *ngFor="let allowedEmail of project?.allowed_emails; last as last">
+                    <a href="mailto:allowedEmail">{{ allowedEmail }}</a><ng-container *ngIf="! last">,</ng-container>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</ng-template>
+<ng-template #noData>
+    <div class="l-message background background-light">
+        <div class="message">
+            <h3>Awaiting project measurements</h3>
+        </div>
+    </div>
+</ng-template>

@@ -1,0 +1,159 @@
+<div class="subheader">
+    <h2 id="page-heading" class="subheader-x-title">Dashboard</h2>
+
+    <button class="icontext icontext-shareproject icontext-reverse">
+        <span class="icontext-x-icon">
+            <svg alt="Checkmark Icon">
+                <use xlink:href="#icon-add"></use>
+            </svg>
+        </span>
+        <span [routerLink]="['/project', 'create']" class="icontext-x-text">
+            Add Project
+        </span>
+    </button>
+</div>
+
+<app-message></app-message>
+
+<div *ngIf="projects; else noProjects" class="l-projectcards">
+    <div class="projectcard" *ngFor="let project of projects">
+
+        <div class="projectcard-x-main">
+            <div class="gradebar" [ngClass]="'gradebar' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'overall'))">
+                <div class="grade">{{ getGradeByName(parseGuid(project.url), 'overall') }}</div>
+            </div>
+            <div class="projectcard-x-rightcol">
+                <div class="projectcard-x-header">
+                    <h3>{{ project.name }}</h3>
+                    <div class="icontext icontext-trendinglg icontext-is-trend{{ getTrendByName(parseGuid(project.url), 'overall') }}">
+                        <span class="icontext-x-icontrending">
+                            <svg alt="Icon">
+                                <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'overall') }}"></use>
+                            </svg>
+                        </span>
+                    </div>
+                </div>
+
+                <h4 *ngIf="projectsLatestMeasurement[parseGuid(project.url)]; else noDateTime">Last updated {{ projectsLatestMeasurement[parseGuid(project.url)]?.date | date:'mediumDate' }} at {{ projectsLatestMeasurement[parseGuid(project.url)]?.date | date:'shortTime' }}</h4>
+                <ng-template #noDateTime>
+                    <h4>Awaiting project measurements</h4>
+                </ng-template>
+
+                <div class="projectcard-x-stats">
+                    <ul class="projectcard-x-statsleftcol">
+                        <li class="projectcard-x-listitem">
+                            <div class="icontext icontext-status icontext-bold"
+                                [ngClass]="
+                                    'icontext' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'architecture')) + ' ' +
+                                    'icontext-is-trend' + getTrendByName(parseGuid(project.url), 'architecture')
+                                    ">
+                                <span class="icontext-x-icon">
+                                    <svg *ngIf="projectsScores[parseGuid(project.url)]; else noArchitectureScore" alt="Icon">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'architecture')) }}"></use>
+                                    </svg>
+                                    <ng-template #noArchitectureScore>?</ng-template>
+                                </span>
+                                <span class="icontext-x-icontrending">
+                                    <svg alt="Icon">
+                                        <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'architecture') }}"></use>
+                                    </svg>
+                                </span>
+                                <span class="icontext-x-text">
+                                    Architecture
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="projectcard-x-listitem">
+                            <div class="icontext icontext-status icontext-bold"
+                                [ngClass]="
+                                    'icontext' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'complexity'))  + ' ' +
+                                    'icontext-is-trend' + getTrendByName(parseGuid(project.url), 'complexity')
+                                    ">
+                                <span class="icontext-x-icon">
+                                    <svg *ngIf="projectsScores[parseGuid(project.url)]; else noComplexityScore" alt="Icon">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'complexity')) }}"></use>
+                                    </svg>
+                                    <ng-template #noComplexityScore>?</ng-template>
+                                </span>
+                                <span class="icontext-x-icontrending">
+                                    <svg alt="Icon">
+                                        <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'complexity') }}"></use>
+                                    </svg>
+                                </span>
+                                <span class="icontext-x-text">
+                                    Complexity
+                                </span>
+                            </div>
+                        </li>
+
+                        <li class="projectcard-x-listitem">
+                            <div class="icontext icontext-status icontext-bold"
+                                [ngClass]="
+                                    'icontext' + getClassSuffixByGrade(getGradeByName(parseGuid(project.url), 'clarity'))  + ' ' +
+                                    'icontext-is-trend' + getTrendByName(parseGuid(project.url), 'clarity')
+                                    ">
+                                <span class="icontext-x-icon">
+                                    <svg *ngIf="projectsScores[parseGuid(project.url)]; else noClarityScore" alt="Icon">
+                                        <use xmlns:xlink="http://www.w3.org/1999/xlink" attr.xlink:href="#{{ getIconNameByGrade(getGradeByName(parseGuid(project.url), 'clarity')) }}"></use>
+                                    </svg>
+                                    <ng-template #noClarityScore>?</ng-template>
+                                </span>
+                                <span class="icontext-x-icontrending">
+                                    <svg alt="Icon">
+                                        <use attr.xlink:href="#icon-trend{{ getTrendByName(parseGuid(project.url), 'clarity') }}"></use>
+                                    </svg>
+                                </span>
+                                <span class="icontext-x-text">
+                                    Clarity
+                                </span>
+                            </div>
+                        </li>
+                    </ul>
+                    <div class="projectcard-x-statsrightcol">
+                        <div class="projectcard-x-stat">
+                            <label>LOC:</label>
+                            <span>
+                                <span class="projectcard-x-statsvalue">{{ projectsLatestMeasurement[parseGuid(project.url)]?.useful_lines_of_code }}&nbsp;</span>
+                                <ng-container *ngTemplateOutlet="locChange; context: { $implicit: projectsLatestMeasurement[parseGuid(project.url)]?.useful_lines_of_code - projectsBaselineMeasurement[parseGuid(project.url)]?.useful_lines_of_code }"></ng-container>
+                                <ng-template #locChange let-locChange>
+                                    <span class="prjectcard-x-statschanged">(<ng-container *ngIf="locChange > 0">+</ng-container>{{ locChange }})</span>
+                                </ng-template>
+                            </span>
+                        </div>
+                        <div class="projectcard-x-stat">
+                            <label>Files:</label>
+                            <span>
+                                <span class="projectcard-x-statsvalue">{{ projectsLatestMeasurement[parseGuid(project.url)]?.num_files }}</span>
+                                <ng-container *ngTemplateOutlet="filesChange; context: { $implicit: projectsLatestMeasurement[parseGuid(project.url)]?.num_files - projectsBaselineMeasurement[parseGuid(project.url)]?.num_files }"></ng-container>
+                                <ng-template #filesChange let-filesChange>
+                                    <span class="prjectcard-x-statschanged">(<ng-container *ngIf="filesChange > 0">+</ng-container>{{ filesChange }})</span>
+                                </ng-template>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="projectcard-x-footer">
+                    <div class="projectcard-x-footerbutton">
+                        <button class="icontext  icontext-viewproject icontext-reverse" [routerLink]="['/project', parseGuid(project.url)]">
+                            <span class="icontext-x-icon">
+                                <svg alt="Icon">
+                                    <use xlink:href="#icon-view"></use>
+                                </svg>
+                            </span>
+                            <span class="icontext-x-text">View Project</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<ng-template #noProjects>
+    <div class="l-message background background-light">
+        <div class="message">
+            <h3>Add your first project.</h3>
+        </div>
+    </div>
+</ng-template>

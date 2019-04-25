@@ -1,0 +1,85 @@
+<div class="subheader">
+    <h2 id="page-heading" class="subheader-x-title">Update Project</h2>
+</div>
+
+<app-message></app-message>
+
+<form *ngIf="form" [formGroup]="form" (ngSubmit)="submitForm($event)" class="l-form background background-light">
+    <div class="l-form-x-leftcol">
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="form.get('name').dirty && form.get('name').invalid">
+                <label for="name">Project Name</label>
+                <input formControlName="name" id="name" type="text" placeholder="Name of the project, e.g.: gson">
+                <div *ngIf="form.get('name').dirty && form.get('name').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="form.get('address').dirty && form.get('address').invalid" >
+                <label for="address">Repository URL</label>
+                <input formControlName="address" id="address" type="text" placeholder="URL for Hg or Git, e.g.: https://github.com/google/gson">
+                <div *ngIf="form.get('address').dirty && form.get('address').invalid" class="formtextfield-x-error">Error</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="form.get('description').dirty && form.get('description').invalid" >
+                <label for="description">Description</label>
+                <textarea formControlName="description" id="description" rows="5" placeholder="A brief description, e.g.: A Java serialization/deserialization library to convert Java Objects into JSON and back "></textarea>
+                <div *ngIf="form.get('description').dirty && form.get('description').invalid" class="formtextfield-x-error">Error</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="form.get('topics').dirty && form.get('topics').invalid">
+                <label for="topics">Topics (Optional)</label>
+                <input formControlName="topics" id="topics" type="text" placeholder="A comma-separated list of GitHub style topics, e.g.: json, android">
+                <div *ngIf="form.get('topics').dirty && form.get('topics').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="form.get('language').dirty && form.get('language').invalid">
+                <label for="language">Language</label>
+                <div class="formselect">
+                    <select formControlName="language" id="language">
+                        <option *ngFor="let language of supportedLanguages; first as first" [value]="language">{{ language }}</option>
+                    </select>
+                </div>
+                <div *ngIf="form.get('language').dirty && form.get('language').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formmultiselect">
+                <label for="formtextfield5">Shared With</label>
+                <div class="formmultiselect-x-input">
+                    <input #sharedWithAddress id="formtextfield5" type="email" placeholder="Email Address..." (input)="showAddButton = (!! sharedWithAddress.value && sharedWithAddress.checkValidity())">
+                    <button *ngIf="showAddButton" class="formmultiselect-x-addbutton" type="button" (click)="addAllowedEmail(sharedWithAddress)">Add</button>
+                </div>
+                <!-- hide if no children so border doesn't show. -->
+                <div *ngIf="form.controls.allowed_emails.value.length" class="formmultiselect-x-list">
+                    <div *ngFor="let allowedEmail of form.controls.allowed_emails.value" class="formmultiselect-x-listitem">{{ allowedEmail }}
+                        <button *ngIf="user.email !== allowedEmail" class="formmultiselect-x-removebutton" type="email" (click)="removeAllowedEmail(allowedEmail)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="l-form-x-textfield">
+            <div class="formtextfield formtextfield-tokenfield">
+                <label for="formtextfield1">Repository Token (Optional)</label>
+                <div class="formtextfield-x-input">
+                    <input *ngIf="editToken; else tokenPlaceholder" formControlName="token" id="token" type="password" placeholder="">
+                    <ng-template #tokenPlaceholder>
+                        <input type="password" value="****************" disabled="">
+                    </ng-template>
+                    <button (click)="editToken = true" class="formtextfield-x-addbutton" type="button">Update</button>
+                </div>
+                <div *ngIf="form.get('token').dirty && form.get('token').invalid" class="formtextfield-x-error">Error</div>
+            </div>
+        </div>
+
+        <div class="l-form-x-submit">
+            <button [disabled]="! form.valid" class="formbutton" type="submit">Update Project</button>
+            <button [routerLink]="['..']" class="formbutton formbutton-linkbutton" type="button">Cancel</button>
+        </div>
+
+    </div>
+    <div class="l-form-x-rightcol background background-formimage"></div>
+</form>

@@ -1,0 +1,30 @@
+<style>
+#table {
+    overflow-x: scroll;
+    width: 100%;
+}
+th {
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid #333;
+}
+td {
+    padding: 3px 20px;
+    border: 1px solid #333;
+}
+</style>
+
+<div id="table">
+<table>
+    <thead>
+        <tr>
+            <th *ngFor="let headerColumn of headerRow">{{ headerColumn }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let dataRow of dataArray">
+            <td *ngFor="let cell of dataRow">{{ cell }}</td>
+        </tr>
+    </tbody>
+</table>
+</div>

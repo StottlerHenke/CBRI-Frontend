@@ -1,0 +1,24 @@
+<div class="subheader subheader-cols subheader-error" *ngFor="let message of messages$ | async" [ngClass]="message.classes" (click)="removeMessage(message)">
+    <div class="subheader-x-leftcol">
+        <div class="icontext icontext-nocircle icontext-smallicon">
+            <span class="icontext-x-icon">
+                <svg alt="Icon">
+                    <use xlink:href="#icon-cautiondark"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">{{ message.title }}</h3>
+        <p>{{ message.text }}</p>
+    </div>
+    <div class="subheader-x-rightcol">
+        <button class="icontext icontext-nocircle icontext-largeicon" (click)="dismiss()">
+            <span class="icontext-x-icon">
+                <svg alt="Icon">
+                    <use xlink:href="#icon-close"></use>
+                </svg>
+            </span>
+        </button>
+    </div>
+</div>

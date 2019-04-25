@@ -1,0 +1,53 @@
+<div class="subheader">
+    <h2 id="page-heading" class="subheader-x-title">Create a User Account</h2>
+</div>
+
+<app-message></app-message>
+
+<form [formGroup]="createUserForm" (ngSubmit)="submitForm($event)" class="l-form background background-light">
+    <div class="l-form-x-leftcol">
+        <div class="l-form-x-textfield">
+            You’ll need a user account in order to add and save projects.
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="createUserForm.get('first_name').dirty && createUserForm.get('first_name').invalid" >
+                <label for="first_name">First name</label>
+                <input formControlName="first_name" id="first_name" type="text">
+                <div *ngIf="createUserForm.get('first_name').dirty && createUserForm.get('first_name').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="createUserForm.get('last_name').dirty && createUserForm.get('last_name').invalid" >
+                <label for="last_name">Last name</label>
+                <input formControlName="last_name" id="last_name" type="text">
+                <div *ngIf="createUserForm.get('last_name').dirty && createUserForm.get('last_name').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="createUserForm.get('email').dirty && createUserForm.get('email').invalid" >
+                <label for="email">Email Address</label>
+                <input formControlName="email" id="email" type="email">
+                <div *ngIf="createUserForm.get('email').dirty && createUserForm.get('email').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="createUserForm.get('username').dirty && createUserForm.get('username').invalid" >
+                <label for="username">Username</label>
+                <input formControlName="username" id="username" type="text">
+                <div *ngIf="createUserForm.get('username').dirty && createUserForm.get('username').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield" [class.formtextfield-is-error]="createUserForm.get('password').dirty && createUserForm.get('password').invalid" >
+                <label for="password">Create a Password</label>
+                <input formControlName="password" id="password" type="password">
+                <div *ngIf="createUserForm.get('password').dirty && createUserForm.get('password').invalid" class="formtextfield-x-error">Error.</div>
+            </div>
+        </div>
+        <input formControlName="organization" id="organization" type="hidden">
+        <div class="l-form-x-submit">
+            <button [disabled]="! createUserForm.valid" class="formbutton formbutton-link" type="submit">Create Account</button><a href [routerLink]="['/user', 'login']">Sign In</a>
+        </div>
+    </div>
+    <div class="l-form-x-rightcol background background-formimage"></div>
+</form>

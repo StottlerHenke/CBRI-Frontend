@@ -1,0 +1,79 @@
+{
+  "_from": "@concentricsky/stottlerhenke-patternlibrary@^0.14.0",
+  "_id": "@concentricsky/stottlerhenke-patternlibrary@0.14.0",
+  "_inBundle": false,
+  "_integrity": "sha512-YcZJeXob8DT+5PdHRdAqVz03Uc+bD0bSqNb9FPvXL+bot4m48pAWA5dgIDMC9+7pjfvyhS226XyM/s+pDYkjxA==",
+  "_location": "/@concentricsky/stottlerhenke-patternlibrary",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "range",
+    "registry": true,
+    "raw": "@concentricsky/stottlerhenke-patternlibrary@^0.14.0",
+    "name": "@concentricsky/stottlerhenke-patternlibrary",
+    "escapedName": "@concentricsky%2fstottlerhenke-patternlibrary",
+    "scope": "@concentricsky",
+    "rawSpec": "^0.14.0",
+    "saveSpec": null,
+    "fetchSpec": "^0.14.0"
+  },
+  "_requiredBy": [
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@concentricsky/stottlerhenke-patternlibrary/-/stottlerhenke-patternlibrary-0.14.0.tgz",
+  "_shasum": "6c2fbc1b0c4a11a4b256933eea7961b1bbb92d13",
+  "_spec": "@concentricsky/stottlerhenke-patternlibrary@^0.14.0",
+  "_where": "/Users/iposs/Sites/henke-ui",
+  "author": {
+    "name": "Front-End Development",
+    "email": "frontend-dev@concentricsky.com",
+    "url": "http://concentricsky.com"
+  },
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "Stottler Henke Pattern Library",
+  "devDependencies": {
+    "@frctl/fractal": "^1.1.5",
+    "@frctl/handlebars": "^1.1.4",
+    "@frctl/mandelbrot": "^1.2.0",
+    "autoprefixer": "^7.1.4",
+    "grunt": "^1.0.1",
+    "grunt-cli": "^1.2.0",
+    "grunt-concurrent": "^2.3.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-uglify": "^3.1.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-sass-globbing": "^1.5.1",
+    "grunt-shell": "^2.1.0",
+    "handlebars-helpers": "^0.9.8",
+    "imagemin-cli": "^3.0.0",
+    "jquery": "^3.3.1",
+    "json": "^9.0.6",
+    "node-sass": "^4.8.3",
+    "postcss-cli": "^4.1.0",
+    "semver": "^5.5.0",
+    "shelljs": "^0.8.1",
+    "svgxuse": "^1.2.6"
+  },
+  "files": [
+    "dist/css/images/",
+    "dist/css/fonts/",
+    "dist/css/reset.css",
+    "dist/css/screen.css",
+    "dist/images/svg-defs.svg"
+  ],
+  "license": "ISC",
+  "name": "@concentricsky/stottlerhenke-patternlibrary",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@stash.concentricsky.com/fd/seed.git"
+  },
+  "scripts": {
+    "build": "grunt build",
+    "clean": "grunt clean",
+    "package": "grunt package",
+    "prepare": "npm run package",
+    "start": "grunt"
+  },
+  "version": "0.14.0"
+}

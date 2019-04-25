@@ -1,0 +1,51 @@
+<style>
+#table {
+    overflow-x: scroll;
+    width: 100%;
+}
+th {
+    font-weight: bold;
+    padding: 10px 20px;
+    border: 1px solid #333;
+}
+td {
+    padding: 3px 20px;
+    border: 1px solid #333;
+}
+</style>
+
+<div class="subheader subheader-projectdetail">
+  <div class="subheader-x-rightcol">
+    <div class="subheader-x-main">
+      <div class="subheader-x-mainleft">
+        <div class="subheader-x-section">
+          <h3>Selection type:</h3>
+          <p>{{ benchmarkDescription?.selection_type }}</p>
+        </div>
+        <div class="subheader-x-section">
+          <h3>Project count:</h3>
+          <p>{{ benchmarkDescription?.num_projects }}</p>
+        </div>
+        <div class="subheader-x-section">
+          <h3>Date:</h3>
+          <p>{{ benchmarkDescription?.date | date:'mediumDate' }} at {{ benchmarkDescription?.date | date:'shortTime' }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="table">
+<table>
+    <thead>
+        <tr>
+            <th *ngFor="let headerColumn of headerRow">{{ headerColumn }}</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let dataRow of dataArray">
+            <td *ngFor="let cell of dataRow">{{ cell }}</td>
+        </tr>
+    </tbody>
+</table>
+</div>

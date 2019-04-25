@@ -1,0 +1,26 @@
+<div class="subheader">
+    <h2 id="page-heading" class="subheader-x-title">Sign In</h2>
+</div>
+
+<app-message></app-message>
+<form [formGroup]="loginForm" (ngSubmit)="submitForm($event)" class="l-form background background-light">
+    <div class="l-form-x-leftcol">
+        <div class="l-form-x-textfield">
+            <div class="formtextfield">
+                <label for="username">Username</label>
+                <input formControlName="username" id="username" type="text">
+            </div>
+        </div>
+        <div class="l-form-x-textfield">
+            <div class="formtextfield">
+                <label for="password">Password</label>
+                <input formControlName="password" id="password" type="password">
+                <a [routerLink]="['/user', 'forgot-password']" form_bg class="formtextfield-x-link">Forgot your password?</a>
+            </div>
+        </div>
+        <div class="l-form-x-submit">
+            <button [disabled]="! loginForm.valid" class="formbutton formbutton-link" type="submit">Sign In</button><a href [routerLink]="['/user', 'register']">Create Account</a>
+        </div>
+    </div>
+    <div class="l-form-x-rightcol background background-formimage"></div>
+</form>

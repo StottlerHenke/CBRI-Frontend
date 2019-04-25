@@ -1,0 +1,41 @@
+<header class="header u-background-dark1">
+  <div class="header-x-logo">
+    <a href="/">
+      <svg alt="CBR Insight Logo">
+        <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#logo"></use>
+      </svg>
+    </a>
+  </div>
+  <div *ngIf="user" class="header-x-buttons">
+    <a class="menuitem" href [routerLink]="['/project', 'list']">Dashboard</a>
+    <div class="l-dropdown" [class.l-dropdown-is-visible]="menuOpen" (click)="menuOpen = ! menuOpen">
+      <button class="menuitem menuitem-usermenu" [class.menuitem-is-active]="menuOpen" (click)="toggleMenu()">
+        <div class="menuitem-x-inner">
+          {{ initials }}
+        </div>
+      </button>
+      <div class="l-dropdown-x-dropdown" [@slidePanel]='userMenuState'>
+        <nav class="dropdown  u-background-dark2">
+          <ul class="dropdown-x-usermenu" role="menubar">
+              <li role="menuitem"><a href [routerLink]="['/user', 'update']">{{ user?.username }}</a></li>
+          </ul>
+          <ul class="dropdown-x-accountmenu" role="menubar">
+            <li [routerLink]="['/user', 'update']" role="menuitem"><a href>Change Password</a></li>
+            <li role="menuitem"><a (click)="signOut()">Sign Out</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</header>
+<main class="l-inertcontainer" role="main" aria-labelledby="page-heading">
+  <router-outlet></router-outlet>
+</main>
+<footer class="footer">
+  <div class="footer-x-leftcol">&#169; {{ getYear() }} Stottler Henke Associates, Inc.</div>
+  <div class="footer-x-rightcol">
+    <div class="footer-x-leftcoltext1">CBRI 1.2.1</div>
+    <span class="footer-x-separator">|</span>
+    <div class="footer-x-leftcoltext2">{{ (versionInfo$ | async)?.APP_VERSION_NUMBER }}</div>
+  </div>
+</footer>
