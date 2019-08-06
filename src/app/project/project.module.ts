@@ -8,6 +8,7 @@ import { SharedModule } from '../shared/shared.module';
 
 import { BenchmarkDescriptionModule } from './benchmark-description/benchmark-description.module';
 import { MeasurementsTableModule } from './measurements-table/measurements-table.module';
+import { ProjectLogModule } from './project-log/project-log.module';
 
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectCreateComponent } from './project-create/project-create.component';
@@ -29,6 +30,7 @@ import 'nvd3';
     ProjectRoutingModule,
     BenchmarkDescriptionModule,
     MeasurementsTableModule,
+    ProjectLogModule,
   ],
   declarations: [ProjectCreateComponent, ProjectUpdateComponent,
     ProjectListComponent, ProjectDetailComponent],

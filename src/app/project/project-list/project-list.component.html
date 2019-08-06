@@ -1,13 +1,13 @@
 <div class="subheader">
     <h2 id="page-heading" class="subheader-x-title">Dashboard</h2>
 
-    <button class="icontext icontext-shareproject icontext-reverse">
+    <button [routerLink]="['/project', 'create']" class="icontext icontext-shareproject icontext-reverse">
         <span class="icontext-x-icon">
             <svg alt="Checkmark Icon">
                 <use xlink:href="#icon-add"></use>
             </svg>
         </span>
-        <span [routerLink]="['/project', 'create']" class="icontext-x-text">
+        <span class="icontext-x-text">
             Add Project
         </span>
     </button>

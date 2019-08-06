@@ -29,7 +29,7 @@
         <p>{{ project?.description }}</p>
       </div>
 
-      <div class="subheader-x-table">
+      <div class="subheader-x-table" *ngIf="measurements && latestMeasurement">
         <div class="subheader-x-tableleft">
           <div class="subheader-x-tableheader">Baseline</div>
           <div class="subheader-x-tablerow">
@@ -72,7 +72,7 @@
           <div class="subheader-x-tablerow">
             <div class="subheader-x-tablecell1">Files:</div>
             <div class="subheader-x-tablecell2">
-                <strong>{{ latestMeasurement.num_files }}</strong>
+                <strong>{{ latestMeasurement?.num_files }}</strong>
                 <ng-container *ngTemplateOutlet="filesChange; context: { $implicit: latestMeasurement?.num_files - baselineMeasurement?.num_files }"></ng-container>
                 <ng-template #filesChange let-filesChange>
                     <span>&nbsp;(<ng-container *ngIf="filesChange > 0">+</ng-container>{{ filesChange }})</span>
@@ -82,7 +82,7 @@
         </div>
       </div>
     </div>
-    <div class="subheader-x-footer">
+    <div class="subheader-x-footer" *ngIf="measurements && latestMeasurement">
       <button (click)="createMeasurement()">Update<span> Project</span></button>
       <span class="subheader-x-pipe"></span>
       <button [routerLink]="['benchmark-description']" ><span>View </span>Benchmark</button>
@@ -496,60 +496,8 @@
           -->
       </div>
     </div>
-
-    <!-- accordion section 6 -->
-    <div class="subheader subheader-cols subheader-projectdetailsection subheader-dark">
-        <div class="subheader-x-leftcol">
-            <div class="icontext icontext-dark icontext-tabletlg">
-                <span class="icontext-x-icon">
-                    <svg alt="Icon">
-                        <use xlink:href="#icon-info"></use>
-                    </svg>
-                </span>
-            </div>
-        </div>
-        <div class="subheader-x-middlecol">
-            <h3 class="subheader-x-title">Project Info</h3>
-        </div>
-    </div>
-    <div class="dropdown dropdown-projectdetail dropdown-dark" [class.dropdown-is-deleterepoconfirm]="confirmDelete">
-        <div class="dropdown-x-actions">
-            <a [routerLink]="['update']">Edit</a>
-            <span class="dropdown-x-pipe"></span>
-            <a *ngIf="! confirmDelete; else confirmDeleteTmpl" (click)="confirmDelete = true; $event.preventDefault()" href>Delete Project</a>
-            <ng-template #confirmDeleteTmpl>
-                <span>Are you sure? &nbsp;&nbsp;</span>
-                <a href (click)="deleteProject(project.id)">Yes</a>
-                <span class="dropdown-x-pipe"></span>
-                <a href (click)="confirmDelete = false">Cancel</a>
-            </ng-template>
-        </div>
-        <div class="projectinfo l-projectinfo">
-            <label>Repo URL:</label>
-            <div><a href="{{ project?.address }}">{{ project?.address }}</a></div>
-        </div>
-        <div *ngIf="project.repositoryOwner" class="projectinfo l-projectinfo">
-            <label>Owner:</label>
-            <div><a href="#">{{ project.repositoryOwner }}</a></div>
-        </div>
-        <div *ngIf="project.createdAt" class="projectinfo l-projectinfo">
-            <label>Created:</label>
-            <div>{{ project.createdAt | date:'mediumDate' }}</div>
-        </div>
-        <div class="projectinfo l-projectinfo">
-            <label>Language:</label>
-            <div>{{ project?.language }}</div>
-        </div>
-        <div class="projectinfo l-projectinfo">
-            <label>Shared With:</label>
-            <div>
-                <ng-container *ngFor="let allowedEmail of project?.allowed_emails; last as last">
-                    <a href="mailto:allowedEmail">{{ allowedEmail }}</a><ng-container *ngIf="! last">,</ng-container>
-                </ng-container>
-            </div>
-        </div>
-    </div>
 </ng-template>
+
 <ng-template #noData>
     <div class="l-message background background-light">
         <div class="message">
@@ -557,3 +505,58 @@
         </div>
     </div>
 </ng-template>
+
+<!-- accordion section 6 -->
+<div class="subheader subheader-cols subheader-projectdetailsection subheader-dark" [class.subheader-padtop]="! (measurements && latestMeasurement)">
+    <div class="subheader-x-leftcol">
+        <div class="icontext icontext-dark icontext-tabletlg">
+            <span class="icontext-x-icon">
+                <svg alt="Icon">
+                    <use xlink:href="#icon-info"></use>
+                </svg>
+            </span>
+        </div>
+    </div>
+    <div class="subheader-x-middlecol">
+        <h3 class="subheader-x-title">Project Info</h3>
+    </div>
+</div>
+<div class="dropdown dropdown-projectdetail dropdown-dark" [class.dropdown-is-deleterepoconfirm]="confirmDelete">
+    <div class="dropdown-x-actions">
+        <a [routerLink]="['update']">Edit</a>
+        <span class="dropdown-x-pipe"></span>
+        <a *ngIf="! confirmDelete; else confirmDeleteTmpl" (click)="confirmDelete = true; $event.preventDefault()" href>Delete Project</a>
+        <ng-template #confirmDeleteTmpl>
+            <span>Are you sure? &nbsp;&nbsp;</span>
+            <a href (click)="deleteProject(project.id)">Yes</a>
+            <span class="dropdown-x-pipe"></span>
+            <a href (click)="confirmDelete = false">Cancel</a>
+        </ng-template>
+        <span class="dropdown-x-pipe"></span>
+        <a [routerLink]="['log']">Show Log</a>
+    </div>
+    <div class="projectinfo l-projectinfo">
+        <label>Repo URL:</label>
+        <div><a href="{{ project?.address }}">{{ project?.address }}</a></div>
+    </div>
+    <div *ngIf="project?.repositoryOwner" class="projectinfo l-projectinfo">
+        <label>Owner:</label>
+        <div><a href="#">{{ project?.repositoryOwner }}</a></div>
+    </div>
+    <div *ngIf="project?.createdAt" class="projectinfo l-projectinfo">
+        <label>Created:</label>
+        <div>{{ project?.createdAt | date:'mediumDate' }}</div>
+    </div>
+    <div class="projectinfo l-projectinfo">
+        <label>Language:</label>
+        <div>{{ project?.language }}</div>
+    </div>
+    <div class="projectinfo l-projectinfo">
+        <label>Shared With:</label>
+        <div>
+            <ng-container *ngFor="let allowedEmail of project?.allowed_emails; last as last">
+                <a href="mailto:allowedEmail">{{ allowedEmail }}</a><ng-container *ngIf="! last">,</ng-container>
+            </ng-container>
+        </div>
+    </div>
+</div>

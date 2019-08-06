@@ -39,6 +39,8 @@ export class ProjectMixin {
   }
 
   onBaselineMeasurement(projectGuid: string, measurement: Measurement) {
+    if (! measurement) return;
+
     /* Store projects baseline measurement scores */
     const baselineMeasurement = this.parseGuid(measurement.url, true);
 
@@ -49,6 +51,8 @@ export class ProjectMixin {
   }
 
   onLatestMeasurement(projectGuid: string, measurement: Measurement) {
+    if (! measurement) return;
+
     /* Store projects latest measurement scores */
     const lastMeasurementGuid = this.parseGuid(measurement.url, true);
 

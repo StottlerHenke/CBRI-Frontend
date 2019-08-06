@@ -8,6 +8,7 @@ import { ProjectCreateResolveGuard } from './project-create/project-create-resol
 import { ProjectUpdateComponent } from './project-update/project-update.component';
 import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
+import { ProjectLogComponent } from './project-log/project-log.component';
 import { BenchmarkDescriptionComponent } from './benchmark-description/benchmark-description.component';
 import { MeasurementsTableComponent } from './measurements-table/measurements-table.component';
 
@@ -40,6 +41,11 @@ const routes: Routes = [
   {
     path: 'project/:guid/measurements-table',
     component: MeasurementsTableComponent,
+    canActivate: [AuthenticationGuard],
+  },
+  {
+    path: 'project/:guid/log',
+    component: ProjectLogComponent,
     canActivate: [AuthenticationGuard],
   },
   {
