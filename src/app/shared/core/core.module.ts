@@ -9,7 +9,7 @@ import { WindowRefService } from './window-ref.service';
 
 @NgModule({
   imports: [
-      LocalStorageModule.withConfig({
+      LocalStorageModule.forRoot({
           prefix: 'cbri',
       }),
   ],

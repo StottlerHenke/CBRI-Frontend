@@ -18,9 +18,6 @@ import { ProjectListComponent } from './project-list/project-list.component';
 import { ProjectDetailComponent } from './project-detail/project-detail.component';
 import { ProjectService } from './project.service';
 
-import 'd3';
-import 'nvd3';
-
 
 @NgModule({
   imports: [

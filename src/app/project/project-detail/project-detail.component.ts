@@ -15,6 +15,9 @@ import { ProjectService } from '../project.service';
 import { slidePanel } from './project-detail.animations';
 import {MessageService} from '../../shared/message/message.service';
 
+import 'nvd3'
+declare const d3: any;
+
 
 @Component({
   selector: 'app-project-detail',

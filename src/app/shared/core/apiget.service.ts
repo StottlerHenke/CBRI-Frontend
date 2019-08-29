@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http, RequestOptions, Response, ResponseContentType } from '@angular/http';
+import { HttpHeaders, HttpClient, HttpResponse } from '@angular/common/http';
 
-import 'rxjs/add/operator/toPromise';
+
 import { FlashMessagesService } from 'ngx-flash-messages';
 import { LocalStorageService } from 'angular-2-local-storage';
 
@@ -36,21 +36,22 @@ export class ApiGetService {
     }
 
     setRequestOptions(options: ApiGetServiceOptions = {}) {
-      let requestOptions = new RequestOptions({
-          headers: new Headers(options.headers)
-      });
+      let requestOptions = {
+          headers: new HttpHeaders(options.headers)
+      };
 
       if (options.withCredentials) {
-          requestOptions = requestOptions.merge({ withCredentials: true });
+          requestOptions['withCredentials'] = true;
       }
 
       if (this.token) {
-          requestOptions.headers.set('Authorization', `JWT ${this.token}`);
+          requestOptions.headers =
+            requestOptions.headers.set('Authorization', `JWT ${this.token}`);
       }
       return requestOptions;
     }
 
-    constructor(private http: Http,
+    constructor(private http: HttpClient,
                 private configService: ConfigService,
                 private windowRef: WindowRefService,
                 private messageService: MessageService,
@@ -58,21 +59,19 @@ export class ApiGetService {
                     this._window = windowRef.nativeWindow;
                 }
 
-    getUrl(url: string, options: ApiGetServiceOptions = {}): Promise<Response> {
+    getUrl(url: string, options: ApiGetServiceOptions = {}): Promise<any> {
         const request = url;
 
         let requestOptions = this.setRequestOptions(options);
 
         if (options.asBlob) {
-            requestOptions.responseType = ResponseContentType.Blob;
+            requestOptions['responseType'] = 'blob';
         }
 
-        return this.http
-            .request(request, requestOptions)
-            .toPromise();
+        return this.http.get(request, requestOptions).toPromise();
     }
 
-    getPlain(apiPath: string, options: ApiGetServiceOptions = {}): Promise<Response> {
+    getPlain(apiPath: string, options: ApiGetServiceOptions = {}): Promise<any> {
         const defaultOptions = this.configService.getConfig(
             'apiGetServiceOptions', {});
 
@@ -94,8 +93,8 @@ export class ApiGetService {
 
     get<T>(apiPath: string, options: ApiGetServiceOptions = {}): Promise<T> {
         return this.getPlain(apiPath, options)
-            .then((response: Response) => {
-                const jsonResponse = response.json();
+            .then((response: any) => {
+                const jsonResponse = response;
                 if (jsonResponse.error) {
                     if ([401, 403].indexOf(jsonResponse.error.status_code) !== -1) {
                         // Redirect, log error to user, etc

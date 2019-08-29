@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
 
 import { LocalStorageModule } from 'angular-2-local-storage';
@@ -26,12 +26,12 @@ import { AuthenticationGuard } from './authentication.guard';
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    HttpModule,
+    HttpClientModule,
     CoreModule,
     SharedModule,
     UserModule,
     ProjectModule,
-    LocalStorageModule.withConfig({
+    LocalStorageModule.forRoot({
         prefix: 'cbri',
         storageType: 'localStorage',
     }),
