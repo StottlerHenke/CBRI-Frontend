@@ -24,7 +24,7 @@ export class ProjectLogComponent implements OnInit {
       this.projectService.getProject(repositoryId).then(
         (project: Repository) => {
           this.project = project;
-          this.log_html = project.log.replace('\n', '<br />');
+          this.log_html = project.log.replace(/\n/g, '<br />');
         });
     });
   }
