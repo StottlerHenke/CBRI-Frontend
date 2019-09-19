@@ -129,7 +129,7 @@ export class ProjectMixin {
         iconName = 'icon-caution';
         break;
       case 'D':
-        iconName = 'icon-caution';
+        iconName = 'icon-alert';
         break;
       case 'F':
         iconName = 'icon-alert';
@@ -152,7 +152,7 @@ export class ProjectMixin {
         classSuffix = '-is-caution';
         break;
       case 'D':
-        classSuffix = '-is-caution';
+        classSuffix = '-is-alert';
         break;
       case 'F':
         classSuffix = '-is-alert';
